@@ -68,6 +68,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
+      ssl: (process.env.DATABASE_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '').includes('supabase.co') ? { rejectUnauthorized: false } : undefined,
       connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '',
     },
   }),
