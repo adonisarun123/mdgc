@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Mercara Downs palette — mist, moss and old timber */
+  --color-downs-950: #0e1f16;
+  --color-downs-900: #14291d;
+  --color-downs-800: #1c3a29;
+  --color-downs-700: #274d37;
+  --color-downs-600: #356349;
+  --color-downs-500: #47795c;
+  --color-downs-200: #b9cfc1;
+  --color-downs-100: #dbe7de;
+  --color-downs-50: #eef4ef;
+
+  --color-mist-50: #f7f8f6;
+  --color-mist-100: #eceeea;
+  --color-mist-200: #dcdfd8;
+  --color-mist-400: #a3a89d;
+  --color-mist-600: #6b7164;
+
+  --color-brass-300: #d6b980;
+  --color-brass-400: #c8a45e;
+  --color-brass-500: #b28e42;
+  --color-brass-600: #8f7134;
+
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-mist-50 text-downs-950 font-sans antialiased;
+}
+
+::selection {
+  background-color: var(--color-brass-300);
+  color: var(--color-downs-950);
+}
