@@ -12,8 +12,10 @@ export const metadata: Metadata = {
 const LINKS = [
   { label: 'Green Fees', href: '/visit/green-fees', note: 'Who may play and what it costs.' },
   { label: 'Plan Your Round', href: '/visit/plan-your-round', note: 'Request a tee time in four short steps.' },
+  { label: 'Caddies & Buggies', href: '/visit/caddies-and-buggies', note: 'Caddies, buggies and rental clubs.' },
   { label: 'Dress Code', href: '/visit/dress-code', note: 'What to wear on the course.' },
   { label: 'Directions', href: '/visit/directions', note: 'Reaching the Downs by road and air.' },
+  { label: 'FAQs', href: '/visit/faqs', note: 'Visitor questions, answered.' },
 ]
 
 export default function VisitPage() {

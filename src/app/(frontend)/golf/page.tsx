@@ -15,8 +15,12 @@ export const revalidate = 300
 const LINKS = [
   { label: 'Hole-by-Hole Guide', href: '/golf/course-guide', note: 'All eighteen holes, with strategy and hazards.' },
   { label: 'Scorecard', href: '/golf/scorecard', note: 'Pars, stroke indexes and tee distances at a glance.' },
+  { label: 'Course Conditions', href: '/golf/course-conditions', note: 'Today’s course, caddy and buggy status.' },
   { label: 'Local Rules', href: '/golf/local-rules', note: 'The rules in force at Mercara Downs.' },
   { label: 'Rules & Etiquette', href: '/golf/rules-and-etiquette', note: 'Dress code, pace of play and clubhouse etiquette.' },
+  { label: 'Coaching', href: '/golf/coaching', note: 'Lessons for beginners and improvers.' },
+  { label: 'Practice Facilities', href: '/golf/practice-facilities', note: 'Warm up before the first tee.' },
+  { label: 'Junior Golf', href: '/golf/junior-golf', note: 'The next generation on the Downs.' },
 ]
 
 export default async function GolfPage() {

@@ -60,8 +60,18 @@ export default async function TournamentsPage() {
       />
 
       <Section>
-        <Eyebrow>Upcoming</Eyebrow>
-        <Heading>On the calendar</Heading>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <Eyebrow>Upcoming</Eyebrow>
+            <Heading>On the calendar</Heading>
+          </div>
+          <a
+            href="/tournaments/register"
+            className="text-sm font-medium text-downs-800 underline underline-offset-4 hover:text-brass-600"
+          >
+            Tournament registration →
+          </a>
+        </div>
         {upcoming.docs.length > 0 ? (
           <ul className="mt-8 space-y-4">
             {upcoming.docs.map((t) => (

@@ -10,6 +10,7 @@ import {
   SubmitButton,
   TextArea,
 } from './shared'
+import { SpamGuard } from './SpamGuard'
 
 export function DiningEnquiryForm() {
   const [result, formAction, pending] = useActionState<ActionResult | null, FormData>(
@@ -21,6 +22,7 @@ export function DiningEnquiryForm() {
 
   return (
     <form action={formAction} className="grid gap-4 sm:grid-cols-2">
+      <SpamGuard />
       <Field label="Date" name="diningDate" type="date" required />
       <Field label="Preferred time" name="preferredTime" placeholder="e.g. 1:00 p.m." required />
       <Field label="Party size" name="partySize" type="number" min={1} defaultValue={2} required />

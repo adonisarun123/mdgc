@@ -2,8 +2,12 @@
 
 import { z } from 'zod'
 import { getPayloadClient } from '@/lib/payload'
+import { isSpam } from '@/lib/antiSpam'
 
 export type ActionResult = { ok: true; message: string } | { ok: false; error: string }
+
+/** Bots get a bland success message; nothing is stored. */
+const SPAM_RESULT: ActionResult = { ok: true, message: 'Thank you. Your submission has been received.' }
 
 const playerCategory = z.enum(['member', 'affiliated', 'member-guest', 'visitor', 'tournament'])
 
@@ -34,6 +38,7 @@ const teeTimeSchema = z.object({
 })
 
 export async function submitTeeTimeRequest(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
   const parsed = teeTimeSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
@@ -81,6 +86,7 @@ const roomSchema = z.object({
 })
 
 export async function submitRoomEnquiry(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
   const parsed = roomSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
@@ -121,6 +127,7 @@ const diningSchema = z.object({
 })
 
 export async function submitDiningEnquiry(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
   const parsed = diningSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
@@ -152,6 +159,7 @@ const membershipSchema = z.object({
 })
 
 export async function submitMembershipEnquiry(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
   const parsed = membershipSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
@@ -165,5 +173,50 @@ export async function submitMembershipEnquiry(_prev: ActionResult | null, formDa
     return { ok: true, message: 'Your membership enquiry has been received. The membership office will be in touch.' }
   } catch {
     return { ok: false, error: 'Something went wrong submitting your enquiry. Please try again or call the club.' }
+  }
+}
+
+/* ---------------- Tournament registration ---------------- */
+
+const tournamentRegistrationSchema = z.object({
+  tournament: z.coerce.number().int().positive('Please choose a tournament'),
+  ...contact,
+  homeClub: z.string().optional(),
+  handicap: z.string().min(1, 'Handicap is required for tournament entry'),
+  affiliationDetails: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+export async function submitTournamentRegistration(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
+  const parsed = tournamentRegistrationSchema.safeParse(Object.fromEntries(formData))
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
+  }
+  try {
+    const payload = await getPayloadClient()
+    // Registrations are accepted only while the tournament is open.
+    const tournament = await payload.findByID({
+      collection: 'tournaments',
+      id: parsed.data.tournament,
+      depth: 0,
+    })
+    if (!tournament || tournament.status !== 'registration-open') {
+      return { ok: false, error: 'Registration for this tournament is not currently open.' }
+    }
+    await payload.create({
+      collection: 'tournament-registrations',
+      data: { ...parsed.data, enquiryStatus: 'new' },
+    })
+    return {
+      ok: true,
+      message:
+        'Your registration request has been received. The tournament office will confirm your entry — a request is not a confirmed place until the club replies.',
+    }
+  } catch {
+    return { ok: false, error: 'Something went wrong submitting your registration. Please try again or contact the tournament office.' }
   }
 }

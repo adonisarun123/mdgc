@@ -11,6 +11,7 @@ import {
   SubmitButton,
   TextArea,
 } from './shared'
+import { SpamGuard } from './SpamGuard'
 
 const STEPS = ['Player category', 'Round information', 'Golfer details', 'Review & submit']
 
@@ -28,6 +29,7 @@ export function TeeTimeForm() {
 
   return (
     <form action={formAction} className="space-y-8">
+      <SpamGuard />
       <ol className="flex flex-wrap gap-2" aria-label="Form steps">
         {STEPS.map((s, i) => (
           <li

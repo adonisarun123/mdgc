@@ -96,6 +96,11 @@ export function Footer() {
           <p className="text-xs uppercase tracking-[0.18em] text-mist-600">
             Eighteen holes in the hills of Coorg
           </p>
+          <p className="flex gap-5 text-xs text-mist-600">
+            <Link href="/visit/faqs" className="hover:text-charcoal">FAQs</Link>
+            <Link href="/privacy-policy" className="hover:text-charcoal">Privacy</Link>
+            <Link href="/terms" className="hover:text-charcoal">Terms</Link>
+          </p>
           <p className="font-serif text-sm tracking-[0.12em] text-charcoal">
             {new Date().getFullYear()} Mercara Downs Golf Club
           </p>

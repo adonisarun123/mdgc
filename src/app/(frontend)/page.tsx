@@ -71,6 +71,28 @@ const ARROW = (
   </svg>
 )
 
+/**
+ * Structured data — conservative by design: no coordinates, ratings or
+ * statistics that the club has not yet verified.
+ */
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'GolfCourse',
+  name: 'Mercara Downs Golf Club',
+  alternateName: 'MDGC',
+  description:
+    'An 18-hole golf course in the hills of Madikeri, Coorg. Golf has been played on the Mercara Downs since the late nineteenth century.',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mdgc.golf',
+  address: {
+    '@type': 'PostalAddress',
+    postOfficeBoxNumber: 'P B No. 79',
+    addressLocality: 'Madikeri',
+    addressRegion: 'Karnataka',
+    postalCode: '571201',
+    addressCountry: 'IN',
+  },
+}
+
 export default async function HomePage() {
   const payload = await getPayloadClient()
 
@@ -98,6 +120,10 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+      />
       {/* ================= HERO ================= */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         <MistBackdrop variant="hero" />

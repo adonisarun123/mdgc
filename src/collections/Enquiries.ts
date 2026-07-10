@@ -1,4 +1,5 @@
 import type { CollectionConfig, Field } from 'payload'
+import { notifyOnEnquiry } from '../hooks/notifyOnEnquiry'
 
 const contactFields: Field[] = [
   {
@@ -45,6 +46,7 @@ const playerCategoryOptions = [
 export const TeeTimeRequests: CollectionConfig = {
   slug: 'tee-time-requests',
   labels: { singular: 'Tee-Time Request', plural: 'Tee-Time Requests' },
+  hooks: { afterChange: [notifyOnEnquiry('tee-time request')] },
   admin: {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'playerCategory', 'preferredDate', 'enquiryStatus'],
@@ -97,6 +99,7 @@ export const TeeTimeRequests: CollectionConfig = {
 export const RoomEnquiries: CollectionConfig = {
   slug: 'room-enquiries',
   labels: { singular: 'Room Enquiry', plural: 'Room Enquiries' },
+  hooks: { afterChange: [notifyOnEnquiry('room enquiry')] },
   admin: {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'checkInDate', 'checkOutDate', 'enquiryStatus'],
@@ -141,6 +144,7 @@ export const RoomEnquiries: CollectionConfig = {
 export const DiningEnquiries: CollectionConfig = {
   slug: 'dining-enquiries',
   labels: { singular: 'Dining Enquiry', plural: 'Dining Enquiries' },
+  hooks: { afterChange: [notifyOnEnquiry('dining enquiry')] },
   admin: {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'diningDate', 'partySize', 'enquiryStatus'],
@@ -169,9 +173,42 @@ export const DiningEnquiries: CollectionConfig = {
   ],
 }
 
+export const TournamentRegistrations: CollectionConfig = {
+  slug: 'tournament-registrations',
+  labels: { singular: 'Tournament Registration', plural: 'Tournament Registrations' },
+  hooks: { afterChange: [notifyOnEnquiry('tournament registration')] },
+  admin: {
+    useAsTitle: 'fullName',
+    defaultColumns: ['fullName', 'tournament', 'handicap', 'enquiryStatus'],
+    group: 'Enquiries',
+  },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    create: () => true,
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
+  },
+  fields: [
+    {
+      name: 'tournament',
+      type: 'relationship',
+      relationTo: 'tournaments',
+      required: true,
+      admin: { description: 'Registrations are accepted only while a tournament is in "Registration Open".' },
+    },
+    ...contactFields,
+    { name: 'homeClub', type: 'text' },
+    { name: 'handicap', type: 'text', required: true },
+    { name: 'affiliationDetails', type: 'textarea' },
+    { name: 'notes', type: 'textarea' },
+    enquiryStatusField,
+  ],
+}
+
 export const MembershipEnquiries: CollectionConfig = {
   slug: 'membership-enquiries',
   labels: { singular: 'Membership Enquiry', plural: 'Membership Enquiries' },
+  hooks: { afterChange: [notifyOnEnquiry('membership enquiry')] },
   admin: {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'createdAt', 'enquiryStatus'],

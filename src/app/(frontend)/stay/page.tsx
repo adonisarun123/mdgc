@@ -78,6 +78,12 @@ export default async function StayPage() {
         <div className="mt-10 max-w-3xl">
           <RoomEnquiryForm />
         </div>
+        <p className="mt-8 text-sm text-mist-600">
+          Check-in, cancellation and house rules:{' '}
+          <a href="/stay/policies" className="underline underline-offset-4 hover:text-downs-900">
+            Downs Retreat policies
+          </a>
+        </p>
       </Section>
     </>
   )

@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { submitMembershipEnquiry, type ActionResult } from '@/app/actions/enquiries'
 import { Field, ResultNotice, SubmitButton, TextArea } from './shared'
+import { SpamGuard } from './SpamGuard'
 
 export function MembershipEnquiryForm() {
   const [result, formAction, pending] = useActionState<ActionResult | null, FormData>(
@@ -14,6 +15,7 @@ export function MembershipEnquiryForm() {
 
   return (
     <form action={formAction} className="grid gap-4 sm:grid-cols-2">
+      <SpamGuard />
       <Field label="Full name" name="fullName" required autoComplete="name" />
       <Field label="Mobile" name="mobile" type="tel" required autoComplete="tel" />
       <Field label="Email" name="email" type="email" required autoComplete="email" />

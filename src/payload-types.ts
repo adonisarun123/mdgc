@@ -80,6 +80,7 @@ export interface Config {
     'room-enquiries': RoomEnquiry;
     'dining-enquiries': DiningEnquiry;
     'membership-enquiries': MembershipEnquiry;
+    'tournament-registrations': TournamentRegistration;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
@@ -102,6 +103,7 @@ export interface Config {
     'room-enquiries': RoomEnquiriesSelect<false> | RoomEnquiriesSelect<true>;
     'dining-enquiries': DiningEnquiriesSelect<false> | DiningEnquiriesSelect<true>;
     'membership-enquiries': MembershipEnquiriesSelect<false> | MembershipEnquiriesSelect<true>;
+    'tournament-registrations': TournamentRegistrationsSelect<false> | TournamentRegistrationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -760,10 +762,33 @@ export interface MembershipEnquiry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tournament-registrations".
+ */
+export interface TournamentRegistration {
+  id: number;
+  /**
+   * Registrations are accepted only while a tournament is in "Registration Open".
+   */
+  tournament: number | Tournament;
+  fullName: string;
+  mobile: string;
+  email: string;
+  homeClub?: string | null;
+  handicap: string;
+  affiliationDetails?: string | null;
+  notes?: string | null;
+  enquiryStatus: 'new' | 'in-progress' | 'confirmed' | 'declined' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name?: string | null;
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -858,6 +883,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'membership-enquiries';
         value: number | MembershipEnquiry;
+      } | null)
+    | ({
+        relationTo: 'tournament-registrations';
+        value: number | TournamentRegistration;
       } | null)
     | ({
         relationTo: 'media';
@@ -1254,6 +1283,23 @@ export interface MembershipEnquiriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tournament-registrations_select".
+ */
+export interface TournamentRegistrationsSelect<T extends boolean = true> {
+  tournament?: T;
+  fullName?: T;
+  mobile?: T;
+  email?: T;
+  homeClub?: T;
+  handicap?: T;
+  affiliationDetails?: T;
+  notes?: T;
+  enquiryStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -1314,6 +1360,8 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

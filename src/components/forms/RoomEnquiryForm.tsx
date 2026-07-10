@@ -11,6 +11,7 @@ import {
   SubmitButton,
   TextArea,
 } from './shared'
+import { SpamGuard } from './SpamGuard'
 
 export function RoomEnquiryForm() {
   const [result, formAction, pending] = useActionState<ActionResult | null, FormData>(
@@ -22,6 +23,7 @@ export function RoomEnquiryForm() {
 
   return (
     <form action={formAction} className="grid gap-4 sm:grid-cols-2">
+      <SpamGuard />
       <Field label="Check-in date" name="checkInDate" type="date" required />
       <Field label="Check-out date" name="checkOutDate" type="date" required />
       <Field label="Number of rooms" name="numberOfRooms" type="number" min={1} defaultValue={1} required />

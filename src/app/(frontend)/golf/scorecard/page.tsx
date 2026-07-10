@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { getPayloadClient } from '@/lib/payload'
 import { Lead, PageHero, Section } from '@/components/ui'
+import { PrintButton } from '@/components/PrintButton'
 
 export const metadata: Metadata = {
   title: 'Scorecard',
@@ -88,10 +89,15 @@ export default async function ScorecardPage() {
         {holes.docs.length === 0 ? (
           <Lead>The scorecard will appear here once course data is published.</Lead>
         ) : (
-          <div className="grid gap-12 lg:grid-cols-2">
-            <Table label="Front nine" rows={front} />
-            <Table label="Back nine" rows={back} />
-          </div>
+          <>
+            <div className="mb-8 flex justify-end">
+              <PrintButton label="Print scorecard" />
+            </div>
+            <div className="grid gap-12 lg:grid-cols-2">
+              <Table label="Front nine" rows={front} />
+              <Table label="Back nine" rows={back} />
+            </div>
+          </>
         )}
       </Section>
     </>

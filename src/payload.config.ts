@@ -1,5 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -21,6 +23,7 @@ import {
   RoomEnquiries,
   DiningEnquiries,
   MembershipEnquiries,
+  TournamentRegistrations,
 } from './collections/Enquiries'
 import { CourseStatus } from './globals/CourseStatus'
 import { CourseInfo } from './globals/CourseInfo'
@@ -53,6 +56,7 @@ export default buildConfig({
     RoomEnquiries,
     DiningEnquiries,
     MembershipEnquiries,
+    TournamentRegistrations,
     Media,
     Users,
   ],
@@ -68,5 +72,50 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  /**
+   * Transactional email — activates when SMTP_* env vars are set.
+   * Without it Payload logs emails to the console; enquiry notifications
+   * are silently skipped. Configure before launch.
+   */
+  ...(process.env.SMTP_HOST
+    ? {
+        email: nodemailerAdapter({
+          defaultFromAddress: process.env.SMTP_FROM_ADDRESS || 'noreply@mdgc.golf',
+          defaultFromName: process.env.SMTP_FROM_NAME || 'Mercara Downs Golf Club',
+          transportOptions: {
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT || 587),
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS,
+            },
+          },
+        }),
+      }
+    : {}),
+  plugins: [
+    /**
+     * Object storage for uploads — REQUIRED for serverless deploys
+     * (Vercel's filesystem is ephemeral). Activates when S3_BUCKET is set;
+     * works with Supabase Storage, R2 or S3 via the endpoint option.
+     * Local development without S3_BUCKET falls back to disk.
+     */
+    ...(process.env.S3_BUCKET
+      ? [
+          s3Storage({
+            collections: { media: true },
+            bucket: process.env.S3_BUCKET,
+            config: {
+              region: process.env.S3_REGION || 'auto',
+              ...(process.env.S3_ENDPOINT ? { endpoint: process.env.S3_ENDPOINT } : {}),
+              forcePathStyle: Boolean(process.env.S3_ENDPOINT),
+              credentials: {
+                accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+                secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+              },
+            },
+          }),
+        ]
+      : []),
+  ],
 })
