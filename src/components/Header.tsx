@@ -1,73 +1,82 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 const NAV = [
   { label: 'Golf', href: '/golf' },
   { label: 'Visit', href: '/visit' },
-  { label: 'Membership', href: '/membership' },
   { label: 'Tournaments', href: '/tournaments' },
   { label: 'Stay', href: '/stay' },
   { label: 'Clubhouse', href: '/clubhouse' },
   { label: 'Heritage', href: '/club/heritage' },
+  { label: 'Contact', href: '/contact' },
 ]
 
+/**
+ * Reference-style header: hanging white logo card top-left, uppercase
+ * letterspaced nav links, two outlined CTAs on the right. Absolutely
+ * positioned over the hero on the homepage; pages below it carry their
+ * own dark hero band so the treatment holds site-wide.
+ */
 export function Header() {
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-downs-800/40 bg-downs-950/95 text-mist-50 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 sm:px-6">
-        <Link href="/" className="group flex items-baseline gap-2" onClick={() => setOpen(false)}>
-          <span className="font-serif text-lg font-semibold tracking-wide text-mist-50 group-hover:text-brass-300">
-            Mercara Downs
+    <header className="absolute inset-x-0 top-0 z-50">
+      <div className="mx-auto flex max-w-[1500px] items-start justify-between gap-4 px-4 sm:px-6">
+        {/* Hanging logo card */}
+        <Link
+          href="/"
+          className="mt-0 flex flex-col items-center bg-white px-4 pb-3 pt-4 text-center shadow-md"
+          onClick={() => setOpen(false)}
+        >
+          <span className="font-serif text-[11px] font-semibold leading-tight tracking-[0.18em] text-inkgreen">
+            MERCARA
+            <br />
+            DOWNS
+            <br />
+            GOLF CLUB
           </span>
-          <span className="hidden text-xs uppercase tracking-[0.2em] text-downs-200 sm:inline">
-            Golf Club
+          <span className="mt-2 border-t border-mist-200 pt-1 text-[7px] uppercase tracking-[0.22em] text-mist-600">
+            Golf in the Mist · Coorg
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+        {/* Desktop nav */}
+        <nav
+          className="mt-6 hidden items-center gap-7 xl:flex"
+          aria-label="Main navigation"
+        >
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm tracking-wide transition-colors hover:text-brass-300 ${
-                pathname.startsWith(item.href) ? 'text-brass-300' : 'text-mist-100'
-              }`}
+              className="text-[13px] font-semibold uppercase tracking-[0.14em] text-white drop-shadow-sm transition-colors hover:text-brass-300"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link
-            href="/visit/plan-your-round"
-            className="rounded-sm bg-brass-400 px-4 py-2 text-sm font-medium text-downs-950 transition-colors hover:bg-brass-300"
-          >
-            Plan Your Round
+        <div className="mt-5 hidden items-center gap-4 xl:flex">
+          <Link href="/membership" className="btn-outline text-white">
+            Membership
           </Link>
-          <Link
-            href="/admin"
-            className="text-xs uppercase tracking-widest text-downs-200 hover:text-mist-50"
-          >
-            Member Login
+          <Link href="/visit/plan-your-round" className="btn-outline text-white">
+            Plan Your Round
           </Link>
         </div>
 
+        {/* Mobile toggle */}
         <button
           type="button"
-          className="lg:hidden"
+          className="mt-6 text-white xl:hidden"
           aria-expanded={open}
           aria-label="Toggle navigation menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <span className="sr-only">Menu</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {open ? (
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" />
             ) : (
@@ -79,33 +88,35 @@ export function Header() {
 
       {open && (
         <nav
-          className="border-t border-downs-800/40 bg-downs-950 px-4 pb-6 pt-2 lg:hidden"
+          className="mx-4 mt-2 bg-downs-950/95 px-6 pb-8 pt-4 backdrop-blur xl:hidden"
           aria-label="Mobile navigation"
         >
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="block py-3 text-base text-mist-100 hover:text-brass-300"
+              className="block py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white hover:text-brass-300"
               onClick={() => setOpen(false)}
             >
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/visit/plan-your-round"
-            className="mt-3 block rounded-sm bg-brass-400 px-4 py-3 text-center font-medium text-downs-950"
-            onClick={() => setOpen(false)}
-          >
-            Plan Your Round
-          </Link>
-          <Link
-            href="/admin"
-            className="mt-3 block text-center text-xs uppercase tracking-widest text-downs-200"
-            onClick={() => setOpen(false)}
-          >
-            Member Login
-          </Link>
+          <div className="mt-4 flex flex-col gap-4">
+            <Link
+              href="/membership"
+              className="btn-outline text-center text-white"
+              onClick={() => setOpen(false)}
+            >
+              Membership
+            </Link>
+            <Link
+              href="/visit/plan-your-round"
+              className="btn-outline text-center text-white"
+              onClick={() => setOpen(false)}
+            >
+              Plan Your Round
+            </Link>
+          </div>
         </nav>
       )}
     </header>
