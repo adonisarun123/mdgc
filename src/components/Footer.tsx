@@ -82,6 +82,12 @@ export function Footer() {
               <Link href="/club/heritage" className="hover:text-charcoal">Heritage</Link>
             </li>
             <li>
+              <Link href="/club/news" className="hover:text-charcoal">Club News</Link>
+            </li>
+            <li>
+              <Link href="/club/committee" className="hover:text-charcoal">Committee</Link>
+            </li>
+            <li>
               <Link href="/club/newsletters" className="hover:text-charcoal">Newsletters</Link>
             </li>
             <li>

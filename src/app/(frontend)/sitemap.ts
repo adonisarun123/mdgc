@@ -36,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/clubhouse/gallery',
     '/club/heritage',
     '/club/committee',
+    '/club/news',
     '/club/newsletters',
     '/contact',
   ]
