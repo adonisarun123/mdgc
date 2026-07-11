@@ -5,9 +5,6 @@ import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import '@fontsource-variable/fraunces'
 import '@fontsource-variable/inter'
-import '@fontsource/cinzel/400.css'
-import '@fontsource/cinzel/600.css'
-import '@fontsource/cinzel/700.css'
 import './styles.css'
 
 export const metadata: Metadata = {

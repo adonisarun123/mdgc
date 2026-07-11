@@ -30,8 +30,8 @@
   --color-bodygray: rgba(0, 0, 0, 0.6);
   --color-footer: #ececec;
 
-  --font-display: 'Cinzel', 'Fraunces Variable', Georgia, serif;
-  --font-serif: 'Cinzel', 'Fraunces Variable', Georgia, serif;
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter Variable', Arial, system-ui, sans-serif;
 }
 
@@ -146,4 +146,79 @@ body {
   main {
     padding: 0;
   }
+}
+
+
+/* ---------- MDGC v3 identity ---------- */
+
+/* Solid brass button — replaces the reference's double-line outline */
+.btn-solid {
+  display: inline-block;
+  padding: 0.85rem 1.9rem;
+  background: var(--color-brass-400);
+  color: var(--color-downs-950);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+.btn-solid:hover {
+  background: var(--color-brass-300);
+  transform: translateY(-1px);
+}
+
+/* Text link with a brass rule that extends on hover */
+.link-rule {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.link-rule::after {
+  content: '';
+  width: 2.2rem;
+  height: 1px;
+  background: var(--color-brass-500);
+  transition: width 0.25s ease;
+}
+.link-rule:hover::after {
+  width: 3.4rem;
+}
+
+/* Scrolling ribbon of the eighteen hole names */
+@keyframes mdgc-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hole-ribbon {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.hole-ribbon > div {
+  display: flex;
+  width: max-content;
+  animation: mdgc-marquee 48s linear infinite;
+}
+.hole-ribbon:hover > div {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hole-ribbon > div { animation: none; }
+}
+
+/* Topographic contour motif — the downs' elevation lines */
+.contour-bg {
+  background-image: repeating-radial-gradient(
+    ellipse 120% 90% at 85% 110%,
+    transparent 0,
+    transparent 46px,
+    rgba(71, 121, 92, 0.14) 47px,
+    transparent 48px
+  );
 }

@@ -77,7 +77,7 @@ export function PageHero({
 }) {
   return (
     <div className="bg-downs-950 text-mist-50">
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-20 lg:pt-40">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brass-300">{eyebrow}</p>
         <h1 className="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight sm:text-5xl">
           {title}

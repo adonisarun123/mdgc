@@ -14,69 +14,56 @@ const NAV = [
 ]
 
 /**
- * Reference-style header: hanging white logo card top-left, uppercase
- * letterspaced nav links, two outlined CTAs on the right. Absolutely
- * positioned over the hero on the homepage; pages below it carry their
- * own dark hero band so the treatment holds site-wide.
+ * MDGC v3 header: a sticky deep-green bar with a serif wordmark and a
+ * brass hairline — deliberately unlike the reference's hanging logo card.
  */
 export function Header() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
-      <div className="mx-auto flex max-w-[1500px] items-start justify-between gap-4 px-4 sm:px-6">
-        {/* Hanging logo card */}
-        <Link
-          href="/"
-          className="mt-0 flex flex-col items-center bg-white px-4 pb-3 pt-4 text-center shadow-md"
-          onClick={() => setOpen(false)}
-        >
-          <span className="font-serif text-[11px] font-semibold leading-tight tracking-[0.18em] text-inkgreen">
-            MERCARA
-            <br />
-            DOWNS
-            <br />
-            GOLF CLUB
+    <header className="sticky top-0 z-50 border-b border-brass-500/40 bg-downs-950/95 text-mist-50 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3.5 sm:px-6">
+        <Link href="/" className="group flex items-baseline gap-3" onClick={() => setOpen(false)}>
+          <span className="font-serif text-xl font-semibold tracking-tight text-mist-50 group-hover:text-brass-300">
+            Mercara Downs
           </span>
-          <span className="mt-2 border-t border-mist-200 pt-1 text-[7px] uppercase tracking-[0.22em] text-mist-600">
-            Golf in the Mist · Coorg
+          <span className="hidden border-l border-brass-500/50 pl-3 text-[10px] uppercase tracking-[0.28em] text-downs-200 sm:inline">
+            Golf Club · Coorg
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav
-          className="mt-6 hidden items-center gap-7 xl:flex"
-          aria-label="Main navigation"
-        >
+        <nav className="hidden items-center gap-6 xl:flex" aria-label="Main navigation">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-[13px] font-semibold uppercase tracking-[0.14em] text-white drop-shadow-sm transition-colors hover:text-brass-300"
+              className="text-[12px] font-semibold uppercase tracking-[0.16em] text-mist-100 transition-colors hover:text-brass-300"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="mt-5 hidden items-center gap-4 xl:flex">
-          <Link href="/membership" className="btn-outline text-white">
+        <div className="hidden items-center gap-5 xl:flex">
+          <Link
+            href="/membership"
+            className="text-[11px] uppercase tracking-[0.2em] text-downs-200 hover:text-brass-300"
+          >
             Membership
           </Link>
-          <Link href="/visit/plan-your-round" className="btn-outline text-white">
+          <Link href="/visit/plan-your-round" className="btn-solid">
             Plan Your Round
           </Link>
         </div>
 
-        {/* Mobile toggle */}
         <button
           type="button"
-          className="mt-6 text-white xl:hidden"
+          className="text-mist-50 xl:hidden"
           aria-expanded={open}
           aria-label="Toggle navigation menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {open ? (
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" />
             ) : (
@@ -88,35 +75,33 @@ export function Header() {
 
       {open && (
         <nav
-          className="mx-4 mt-2 bg-downs-950/95 px-6 pb-8 pt-4 backdrop-blur xl:hidden"
+          className="border-t border-brass-500/30 bg-downs-950 px-4 pb-8 pt-3 xl:hidden"
           aria-label="Mobile navigation"
         >
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="block py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white hover:text-brass-300"
+              className="block py-3 text-sm font-semibold uppercase tracking-[0.16em] text-mist-100 hover:text-brass-300"
               onClick={() => setOpen(false)}
             >
               {item.label}
             </Link>
           ))}
-          <div className="mt-4 flex flex-col gap-4">
-            <Link
-              href="/membership"
-              className="btn-outline text-center text-white"
-              onClick={() => setOpen(false)}
-            >
-              Membership
-            </Link>
-            <Link
-              href="/visit/plan-your-round"
-              className="btn-outline text-center text-white"
-              onClick={() => setOpen(false)}
-            >
-              Plan Your Round
-            </Link>
-          </div>
+          <Link
+            href="/membership"
+            className="block py-3 text-sm font-semibold uppercase tracking-[0.16em] text-mist-100 hover:text-brass-300"
+            onClick={() => setOpen(false)}
+          >
+            Membership
+          </Link>
+          <Link
+            href="/visit/plan-your-round"
+            className="btn-solid mt-4 block text-center"
+            onClick={() => setOpen(false)}
+          >
+            Plan Your Round
+          </Link>
         </nav>
       )}
     </header>

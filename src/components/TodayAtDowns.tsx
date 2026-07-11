@@ -44,7 +44,7 @@ export function TodayAtDowns({ status }: { status: CourseStatus }) {
         {updated ? <p className="text-xs text-mist-600">Last updated: {updated} IST</p> : null}
       </div>
 
-      <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-5">
+      <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center gap-2">
             <Dot tone={toneFor(row.value)} />
