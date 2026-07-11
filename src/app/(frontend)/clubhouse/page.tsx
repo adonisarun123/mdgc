@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
+import { IMAGES } from '@/lib/siteImages'
 import { Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
 
 export const metadata: Metadata = {
@@ -23,6 +25,19 @@ export default function ClubhousePage() {
         title="The clubhouse"
         lead="The heart of the club — where rounds are settled, stories retold and guests received."
       />
+      <Section>
+        <div className="relative aspect-[21/9] overflow-hidden rounded-sm">
+          <Image
+            src={IMAGES.clubhouse.src}
+            alt={IMAGES.clubhouse.alt}
+            fill
+            priority
+            sizes="(min-width: 1280px) 1216px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      </Section>
+
       <Section>
         <Eyebrow>Facilities</Eyebrow>
         <Heading>What&rsquo;s here</Heading>

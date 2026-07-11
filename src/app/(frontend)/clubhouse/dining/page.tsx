@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
-import { Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
+import { IMAGES } from '@/lib/siteImages'
+import { Eyebrow, Heading, PageHero, Section } from '@/components/ui'
 import { DiningEnquiryForm } from '@/components/forms/DiningEnquiryForm'
 
 export const metadata: Metadata = {
@@ -17,6 +19,25 @@ export default function DiningPage() {
         title="Bar and dining"
         lead="Coorg home cooking after your round, and a bar with a view of the downs."
       />
+      <Section>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[IMAGES.diningView1, IMAGES.barLounge1].map((img) => (
+            <div key={img.src} className="relative aspect-[3/2] overflow-hidden rounded-sm">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(min-width: 640px) 48vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-xs uppercase tracking-[0.18em] text-mist-600">
+          The dining room and bar — club photography
+        </p>
+      </Section>
+
       <Section>
         <Eyebrow>How It Works</Eyebrow>
         <Heading>Ordering ahead</Heading>

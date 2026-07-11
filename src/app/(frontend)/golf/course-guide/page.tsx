@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { getPayloadClient } from '@/lib/payload'
+import { HOLE_IMAGES } from '@/lib/siteImages'
 import { Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
 
 export const metadata: Metadata = {
@@ -50,8 +52,20 @@ export default async function CourseGuidePage() {
               <li key={hole.id}>
                 <Link
                   href={`/golf/course-guide/${hole.holeNumber}`}
-                  className="group block h-full rounded-sm border border-downs-100 bg-white p-6 transition-shadow hover:shadow-md"
+                  className="group block h-full overflow-hidden rounded-sm border border-downs-100 bg-white transition-shadow hover:shadow-md"
                 >
+                  {HOLE_IMAGES[hole.holeNumber] ? (
+                    <div className="relative aspect-[16/9] overflow-hidden">
+                      <Image
+                        src={HOLE_IMAGES[hole.holeNumber].src}
+                        alt={HOLE_IMAGES[hole.holeNumber].alt}
+                        fill
+                        sizes="(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  ) : null}
+                  <div className="p-6">
                   <div className="flex items-baseline justify-between">
                     <p className="text-xs uppercase tracking-widest text-mist-600">
                       Hole {hole.holeNumber}
@@ -64,6 +78,7 @@ export default async function CourseGuidePage() {
                   <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-mist-600">
                     {hole.overview}
                   </p>
+                  </div>
                 </Link>
               </li>
             ))}

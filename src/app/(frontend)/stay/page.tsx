@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 import { getPayloadClient } from '@/lib/payload'
+import { IMAGES } from '@/lib/siteImages'
 import { Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
 import { RoomEnquiryForm } from '@/components/forms/RoomEnquiryForm'
 
@@ -30,6 +32,25 @@ export default async function StayPage() {
         title="Wake up beside the first tee"
         lead="The Downs Retreat offers rooms at the club with course and garden views — a short walk from the clubhouse, the bar and the morning mist."
       />
+
+      <Section>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[IMAGES.roomDeluxe1, IMAGES.roomDeluxe2].map((img) => (
+            <div key={img.src} className="relative aspect-[3/2] overflow-hidden rounded-sm">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(min-width: 640px) 48vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-xs uppercase tracking-[0.18em] text-mist-600">
+          Rooms at the Downs Retreat — club photography
+        </p>
+      </Section>
 
       <Section>
         <Eyebrow>Rooms</Eyebrow>

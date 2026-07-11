@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { getPayloadClient } from '@/lib/payload'
+import { HOLE_IMAGES, IMAGES } from '@/lib/siteImages'
 import { TodayAtDowns } from '@/components/TodayAtDowns'
 
 export const metadata: Metadata = {
@@ -28,24 +30,12 @@ const JSON_LD = {
   },
 }
 
-/** Placeholder art — replaced by club photography at content migration. */
-function MistArt({ variant, className = '' }: { variant: 'course' | 'dining' | 'stay'; className?: string }) {
-  const layers: Record<string, string> = {
-    course:
-      'bg-[linear-gradient(160deg,rgba(9,20,14,0.35),rgba(14,31,22,0.15)),radial-gradient(ellipse_at_25%_75%,#47795c_0%,#274d37_55%,#14291d_100%)]',
-    dining:
-      'bg-[linear-gradient(160deg,rgba(20,15,8,0.4),rgba(30,22,10,0.2)),radial-gradient(ellipse_at_75%_30%,#8f7134_0%,#4a3a1c_55%,#1c150a_100%)]',
-    stay: 'bg-[linear-gradient(160deg,rgba(10,16,20,0.4),rgba(14,24,28,0.2)),radial-gradient(ellipse_at_50%_75%,#3d5a63_0%,#22383e_55%,#0e181c_100%)]',
-  }
-  return (
-    <div className={`relative overflow-hidden ${className}`}>
-      <div aria-hidden="true" className={`absolute inset-0 ${layers[variant]}`} />
-      <p className="absolute bottom-3 left-4 text-[10px] uppercase tracking-[0.2em] text-white/50">
-        Club photography to come
-      </p>
-    </div>
-  )
-}
+/** Legacy club photography, migrated from mdgc.golf — see src/lib/siteImages.ts. */
+const SPLIT_IMAGES = {
+  course: IMAGES.greenBunkersForest,
+  dining: IMAGES.diningView2,
+  stay: IMAGES.roomDeluxe2,
+} as const
 
 /** Alternating split section: image block with an overlapping content card. */
 function SplitSection({
@@ -70,10 +60,19 @@ function SplitSection({
   return (
     <section className={tinted ? 'bg-downs-50' : 'bg-page'}>
       <div className="mx-auto grid max-w-7xl items-center gap-0 px-4 py-16 sm:px-6 lg:grid-cols-12 lg:py-24">
-        <MistArt
-          variant={variant}
-          className={`aspect-[4/3] lg:col-span-7 ${reversed ? 'lg:order-2 lg:col-start-6' : ''}`}
-        />
+        <div
+          className={`relative aspect-[4/3] overflow-hidden lg:col-span-7 ${
+            reversed ? 'lg:order-2 lg:col-start-6' : ''
+          }`}
+        >
+          <Image
+            src={SPLIT_IMAGES[variant].src}
+            alt={SPLIT_IMAGES[variant].alt}
+            fill
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="object-cover"
+          />
+        </div>
         <div
           className={`relative z-10 -mt-10 bg-white p-8 shadow-lg sm:p-10 lg:col-span-5 lg:mt-0 ${
             reversed ? 'lg:order-1 lg:col-start-1 lg:-mr-16' : 'lg:-ml-16'
@@ -132,11 +131,19 @@ export default async function HomePage() {
 
       {/* ============ HERO — asymmetric, status board integrated ============ */}
       <section className="relative overflow-hidden bg-downs-950 text-mist-50">
+        <Image
+          src={IMAGES.hero.src}
+          alt={IMAGES.hero.alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_20%,rgba(71,121,92,0.45),transparent_55%),radial-gradient(ellipse_at_90%_90%,rgba(200,164,94,0.12),transparent_45%)]"
+          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(9,22,15,0.92)_0%,rgba(9,22,15,0.78)_45%,rgba(9,22,15,0.45)_100%)]"
         />
-        <div className="contour-bg absolute inset-0" aria-hidden="true" />
+        <div className="contour-bg absolute inset-0 opacity-40" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-12 lg:pb-28 lg:pt-24">
           <div className="lg:col-span-7">
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brass-300">
@@ -232,6 +239,17 @@ export default async function HomePage() {
             <div className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
               {signatureHoles.map((hole) => (
                 <Link key={hole.id} href={`/golf/course-guide/${hole.holeNumber}`} className="group">
+                  {HOLE_IMAGES[hole.holeNumber] ? (
+                    <div className="relative mb-4 aspect-[3/2] overflow-hidden">
+                      <Image
+                        src={HOLE_IMAGES[hole.holeNumber].src}
+                        alt={HOLE_IMAGES[hole.holeNumber].alt}
+                        fill
+                        sizes="(min-width: 1024px) 24vw, (min-width: 640px) 46vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  ) : null}
                   <p className="font-serif text-6xl font-semibold leading-none text-downs-100 transition-colors group-hover:text-brass-300">
                     {String(hole.holeNumber).padStart(2, '0')}
                   </p>

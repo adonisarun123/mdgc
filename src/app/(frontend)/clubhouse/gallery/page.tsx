@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 
 import { getPayloadClient } from '@/lib/payload'
-import { Lead, PageHero, Section } from '@/components/ui'
+import { GALLERY_IMAGES } from '@/lib/siteImages'
+import { PageHero, Section } from '@/components/ui'
 
 export const metadata: Metadata = {
   title: 'Gallery',
@@ -53,10 +54,26 @@ export default async function GalleryPage() {
             ))}
           </ul>
         ) : (
-          <Lead>
-            The gallery is being rebuilt with properly credited photography of the course and
-            clubhouse. Images will appear here once usage permissions are confirmed.
-          </Lead>
+          <>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {GALLERY_IMAGES.map((img) => (
+                <li key={img.src} className="overflow-hidden rounded-sm border border-downs-100 bg-white">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={img.width}
+                    height={img.height}
+                    sizes="(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 100vw"
+                    className="h-64 w-full object-cover"
+                  />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-8 text-sm text-mist-600">
+              Photography from the club&rsquo;s own archive. New course and clubhouse photography
+              will join the gallery as it is taken and approved.
+            </p>
+          </>
         )}
       </Section>
     </>

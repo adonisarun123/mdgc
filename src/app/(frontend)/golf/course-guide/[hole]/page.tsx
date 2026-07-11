@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { getPayloadClient } from '@/lib/payload'
+import { HOLE_IMAGES } from '@/lib/siteImages'
 import { Section } from '@/components/ui'
 
 export const revalidate = 300
@@ -93,6 +95,23 @@ export default async function HolePage({ params }: Props) {
       <Section>
         <div className="grid gap-12 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
+            {HOLE_IMAGES[holeNumber] ? (
+              <figure>
+                <div className="relative aspect-[16/9] overflow-hidden rounded-sm">
+                  <Image
+                    src={HOLE_IMAGES[holeNumber].src}
+                    alt={HOLE_IMAGES[holeNumber].alt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 62vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="mt-2 text-xs uppercase tracking-[0.18em] text-mist-600">
+                  {hole.officialName} — from the club&rsquo;s course photography
+                </figcaption>
+              </figure>
+            ) : null}
             <div>
               <h2 className="font-serif text-2xl font-semibold text-downs-900">The hole</h2>
               <p className="mt-3 leading-relaxed text-downs-800">{hole.overview}</p>

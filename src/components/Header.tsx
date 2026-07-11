@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -23,7 +24,15 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-brass-500/40 bg-downs-950/95 text-mist-50 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3.5 sm:px-6">
-        <Link href="/" className="group flex items-baseline gap-3" onClick={() => setOpen(false)}>
+        <Link href="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
+          <Image
+            src="/images/brand/crest.png"
+            alt=""
+            aria-hidden="true"
+            width={34}
+            height={37}
+            className="h-9 w-auto"
+          />
           <span className="font-serif text-xl font-semibold tracking-tight text-mist-50 group-hover:text-brass-300">
             Mercara Downs
           </span>
