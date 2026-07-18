@@ -18,12 +18,15 @@ import { Newsletters } from './collections/Newsletters'
 import { CommitteeMembers } from './collections/CommitteeMembers'
 import { AffiliatedClubs } from './collections/AffiliatedClubs'
 import { Stories } from './collections/Stories'
+import { RoomBookings } from './collections/RoomBookings'
+import { Packages } from './collections/Packages'
 import {
   TeeTimeRequests,
   RoomEnquiries,
   DiningEnquiries,
   MembershipEnquiries,
   TournamentRegistrations,
+  EventEnquiries,
 } from './collections/Enquiries'
 import { CourseStatus } from './globals/CourseStatus'
 import { CourseInfo } from './globals/CourseInfo'
@@ -46,6 +49,8 @@ export default buildConfig({
     CourseHoles,
     Tournaments,
     Rooms,
+    RoomBookings,
+    Packages,
     Tariffs,
     Contacts,
     AffiliatedClubs,
@@ -57,6 +62,7 @@ export default buildConfig({
     DiningEnquiries,
     MembershipEnquiries,
     TournamentRegistrations,
+    EventEnquiries,
     Media,
     Users,
   ],

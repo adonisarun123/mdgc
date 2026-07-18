@@ -3,8 +3,9 @@ import Image from 'next/image'
 
 import { getPayloadClient } from '@/lib/payload'
 import { IMAGES } from '@/lib/siteImages'
-import { Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
+import { ButtonLink, Eyebrow, Heading, Lead, PageHero, Section } from '@/components/ui'
 import { RoomEnquiryForm } from '@/components/forms/RoomEnquiryForm'
+import { LodgingJsonLd } from '@/components/StructuredData'
 
 export const metadata: Metadata = {
   title: 'Stay at Downs Retreat',
@@ -27,6 +28,7 @@ export default async function StayPage() {
 
   return (
     <>
+      <LodgingJsonLd />
       <PageHero
         eyebrow="Stay · Downs Retreat"
         title="Wake up beside the first tee"
@@ -34,7 +36,13 @@ export default async function StayPage() {
       />
 
       <Section>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-wrap gap-4">
+          <ButtonLink href="/stay/book">Check availability &amp; book</ButtonLink>
+          <ButtonLink href="/stay/stay-and-play" variant="secondary">
+            Stay &amp; Play packages
+          </ButtonLink>
+        </div>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {[IMAGES.roomDeluxe1, IMAGES.roomDeluxe2].map((img) => (
             <div key={img.src} className="relative aspect-[3/2] overflow-hidden rounded-sm">
               <Image

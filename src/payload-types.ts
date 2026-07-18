@@ -70,6 +70,8 @@ export interface Config {
     'course-holes': CourseHole;
     tournaments: Tournament;
     rooms: Room;
+    'room-bookings': RoomBooking;
+    packages: Package;
     tariffs: Tariff;
     contacts: Contact;
     'affiliated-clubs': AffiliatedClub;
@@ -81,6 +83,7 @@ export interface Config {
     'dining-enquiries': DiningEnquiry;
     'membership-enquiries': MembershipEnquiry;
     'tournament-registrations': TournamentRegistration;
+    'event-enquiries': EventEnquiry;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
@@ -93,6 +96,8 @@ export interface Config {
     'course-holes': CourseHolesSelect<false> | CourseHolesSelect<true>;
     tournaments: TournamentsSelect<false> | TournamentsSelect<true>;
     rooms: RoomsSelect<false> | RoomsSelect<true>;
+    'room-bookings': RoomBookingsSelect<false> | RoomBookingsSelect<true>;
+    packages: PackagesSelect<false> | PackagesSelect<true>;
     tariffs: TariffsSelect<false> | TariffsSelect<true>;
     contacts: ContactsSelect<false> | ContactsSelect<true>;
     'affiliated-clubs': AffiliatedClubsSelect<false> | AffiliatedClubsSelect<true>;
@@ -104,6 +109,7 @@ export interface Config {
     'dining-enquiries': DiningEnquiriesSelect<false> | DiningEnquiriesSelect<true>;
     'membership-enquiries': MembershipEnquiriesSelect<false> | MembershipEnquiriesSelect<true>;
     'tournament-registrations': TournamentRegistrationsSelect<false> | TournamentRegistrationsSelect<true>;
+    'event-enquiries': EventEnquiriesSelect<false> | EventEnquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -374,6 +380,10 @@ export interface Tournament {
 export interface Room {
   id: number;
   roomName: string;
+  /**
+   * Number of physical rooms in this category. The availability checker subtracts bookings in the register from this figure — keep it accurate.
+   */
+  totalUnits: number;
   capacity: number;
   bedType?: ('double' | 'twin' | 'family' | 'suite') | null;
   view?: ('course' | 'garden' | 'other') | null;
@@ -411,6 +421,183 @@ export interface Room {
   };
   gallery?: (number | Media)[] | null;
   policies?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  displayOrder?: number | null;
+  /**
+   * Content marked "Pending" is treated as unverified and is hidden or softened on the public site.
+   */
+  verification: {
+    status: 'pending' | 'verified';
+    verifiedBy?: string | null;
+    verifiedOn?: string | null;
+    /**
+     * Internal notes only. Never shown publicly.
+     */
+    notes?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The single register of all room bookings from every channel. The public availability checker reads from this — enter every phone, email, walk-in and OTA booking here as soon as it is taken.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "room-bookings".
+ */
+export interface RoomBooking {
+  id: number;
+  referenceTitle?: string | null;
+  room: number | Room;
+  /**
+   * How many rooms of this category this booking occupies.
+   */
+  unitsBooked: number;
+  checkInDate: string;
+  checkOutDate: string;
+  /**
+   * Tentative, Confirmed and Checked-in bookings (and Maintenance blocks) count against availability. Cancelled, No-show and Checked-out do not.
+   */
+  bookingStatus:
+    'tentative' | 'confirmed' | 'checked-in' | 'checked-out' | 'cancelled' | 'no-show' | 'maintenance-block';
+  /**
+   * Where this booking came from.
+   */
+  source:
+    | 'website'
+    | 'phone'
+    | 'email'
+    | 'walk-in'
+    | 'booking-com'
+    | 'makemytrip'
+    | 'agoda'
+    | 'other-ota'
+    | 'travel-agent'
+    | 'club-office';
+  /**
+   * OTA booking ID, email reference or similar, if any.
+   */
+  externalReference?: string | null;
+  /**
+   * Leave blank only for maintenance blocks.
+   */
+  guestName?: string | null;
+  mobile?: string | null;
+  email?: string | null;
+  adults?: number | null;
+  children?: number | null;
+  guestCategory?: ('member' | 'affiliated' | 'member-guest' | 'visitor' | 'tournament') | null;
+  /**
+   * INR per night quoted to the guest, excluding taxes.
+   */
+  tariffQuoted?: number | null;
+  /**
+   * e.g. plus 12% GST, includes breakfast
+   */
+  tariffNote?: string | null;
+  /**
+   * The website enquiry this booking was created from, if any.
+   */
+  relatedEnquiry?: (number | null) | RoomEnquiry;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "room-enquiries".
+ */
+export interface RoomEnquiry {
+  id: number;
+  checkInDate: string;
+  checkOutDate: string;
+  numberOfRooms: number;
+  /**
+   * Room category the guest chose in the availability checker, if any.
+   */
+  preferredRoom?: (number | null) | Room;
+  /**
+   * Stay & Play package the guest enquired about, if any.
+   */
+  packageInterest?: string | null;
+  adults: number;
+  children?: number | null;
+  guestCategory: 'member' | 'affiliated' | 'member-guest' | 'visitor' | 'tournament';
+  golfRequired?: boolean | null;
+  diningRequired?: boolean | null;
+  fullName: string;
+  mobile: string;
+  email: string;
+  notes?: string | null;
+  enquiryStatus: 'new' | 'in-progress' | 'confirmed' | 'declined' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "packages".
+ */
+export interface Package {
+  id: number;
+  packageName: string;
+  /**
+   * Show this package on the public site.
+   */
+  published?: boolean | null;
+  /**
+   * One or two sentences shown on the package card.
+   */
+  summary: string;
+  nights: number;
+  /**
+   * Rounds of golf included.
+   */
+  rounds: number;
+  minGuests?: number | null;
+  /**
+   * e.g. One night at the Downs Retreat · 18 holes with caddie · Coorg breakfast
+   */
+  inclusions: {
+    inclusion: string;
+    id?: string | null;
+  }[];
+  /**
+   * Who may book this package.
+   */
+  eligibility?: ('member' | 'affiliated' | 'member-guest' | 'visitor')[] | null;
+  pricing?: {
+    /**
+     * INR, excluding taxes.
+     */
+    price?: number | null;
+    priceBasis?: ('per-person' | 'per-couple' | 'per-room') | null;
+    /**
+     * e.g. plus applicable taxes
+     */
+    taxNote?: string | null;
+    effectiveDate?: string | null;
+    /**
+     * The price is hidden automatically once this date passes.
+     */
+    reviewDate?: string | null;
+  };
+  image?: (number | null) | Media;
+  /**
+   * Longer description, terms, seasonal notes.
+   */
+  details?: {
     root: {
       type: string;
       children: {
@@ -704,28 +891,6 @@ export interface TeeTimeRequest {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "room-enquiries".
- */
-export interface RoomEnquiry {
-  id: number;
-  checkInDate: string;
-  checkOutDate: string;
-  numberOfRooms: number;
-  adults: number;
-  children?: number | null;
-  guestCategory: 'member' | 'affiliated' | 'member-guest' | 'visitor' | 'tournament';
-  golfRequired?: boolean | null;
-  diningRequired?: boolean | null;
-  fullName: string;
-  mobile: string;
-  email: string;
-  notes?: string | null;
-  enquiryStatus: 'new' | 'in-progress' | 'confirmed' | 'declined' | 'closed';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "dining-enquiries".
  */
 export interface DiningEnquiry {
@@ -776,6 +941,43 @@ export interface TournamentRegistration {
   homeClub?: string | null;
   handicap: string;
   affiliationDetails?: string | null;
+  notes?: string | null;
+  enquiryStatus: 'new' | 'in-progress' | 'confirmed' | 'declined' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-enquiries".
+ */
+export interface EventEnquiry {
+  id: number;
+  eventType:
+    | 'corporate-golf-day'
+    | 'conference'
+    | 'conference-and-golf'
+    | 'corporate-offsite'
+    | 'private-dinner'
+    | 'social-evening'
+    | 'other';
+  organisation?: string | null;
+  preferredDate: string;
+  alternativeDate?: string | null;
+  headcount: number;
+  /**
+   * How many of the party will play golf.
+   */
+  golfersCount?: number | null;
+  roomsRequired?: number | null;
+  cateringRequired?: boolean | null;
+  barRequired?: boolean | null;
+  /**
+   * AV, entertainment, format or other requirements.
+   */
+  requirements?: string | null;
+  fullName: string;
+  mobile: string;
+  email: string;
   notes?: string | null;
   enquiryStatus: 'new' | 'in-progress' | 'confirmed' | 'declined' | 'closed';
   updatedAt: string;
@@ -845,6 +1047,14 @@ export interface PayloadLockedDocument {
         value: number | Room;
       } | null)
     | ({
+        relationTo: 'room-bookings';
+        value: number | RoomBooking;
+      } | null)
+    | ({
+        relationTo: 'packages';
+        value: number | Package;
+      } | null)
+    | ({
         relationTo: 'tariffs';
         value: number | Tariff;
       } | null)
@@ -887,6 +1097,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tournament-registrations';
         value: number | TournamentRegistration;
+      } | null)
+    | ({
+        relationTo: 'event-enquiries';
+        value: number | EventEnquiry;
       } | null)
     | ({
         relationTo: 'media';
@@ -1041,6 +1255,7 @@ export interface TournamentsSelect<T extends boolean = true> {
  */
 export interface RoomsSelect<T extends boolean = true> {
   roomName?: T;
+  totalUnits?: T;
   capacity?: T;
   bedType?: T;
   view?: T;
@@ -1065,6 +1280,73 @@ export interface RoomsSelect<T extends boolean = true> {
       };
   gallery?: T;
   policies?: T;
+  displayOrder?: T;
+  verification?:
+    | T
+    | {
+        status?: T;
+        verifiedBy?: T;
+        verifiedOn?: T;
+        notes?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "room-bookings_select".
+ */
+export interface RoomBookingsSelect<T extends boolean = true> {
+  referenceTitle?: T;
+  room?: T;
+  unitsBooked?: T;
+  checkInDate?: T;
+  checkOutDate?: T;
+  bookingStatus?: T;
+  source?: T;
+  externalReference?: T;
+  guestName?: T;
+  mobile?: T;
+  email?: T;
+  adults?: T;
+  children?: T;
+  guestCategory?: T;
+  tariffQuoted?: T;
+  tariffNote?: T;
+  relatedEnquiry?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "packages_select".
+ */
+export interface PackagesSelect<T extends boolean = true> {
+  packageName?: T;
+  published?: T;
+  summary?: T;
+  nights?: T;
+  rounds?: T;
+  minGuests?: T;
+  inclusions?:
+    | T
+    | {
+        inclusion?: T;
+        id?: T;
+      };
+  eligibility?: T;
+  pricing?:
+    | T
+    | {
+        price?: T;
+        priceBasis?: T;
+        taxNote?: T;
+        effectiveDate?: T;
+        reviewDate?: T;
+      };
+  image?: T;
+  details?: T;
   displayOrder?: T;
   verification?:
     | T
@@ -1234,6 +1516,8 @@ export interface RoomEnquiriesSelect<T extends boolean = true> {
   checkInDate?: T;
   checkOutDate?: T;
   numberOfRooms?: T;
+  preferredRoom?: T;
+  packageInterest?: T;
   adults?: T;
   children?: T;
   guestCategory?: T;
@@ -1293,6 +1577,29 @@ export interface TournamentRegistrationsSelect<T extends boolean = true> {
   homeClub?: T;
   handicap?: T;
   affiliationDetails?: T;
+  notes?: T;
+  enquiryStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-enquiries_select".
+ */
+export interface EventEnquiriesSelect<T extends boolean = true> {
+  eventType?: T;
+  organisation?: T;
+  preferredDate?: T;
+  alternativeDate?: T;
+  headcount?: T;
+  golfersCount?: T;
+  roomsRequired?: T;
+  cateringRequired?: T;
+  barRequired?: T;
+  requirements?: T;
+  fullName?: T;
+  mobile?: T;
+  email?: T;
   notes?: T;
   enquiryStatus?: T;
   updatedAt?: T;

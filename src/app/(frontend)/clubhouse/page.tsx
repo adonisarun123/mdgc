@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 const LINKS = [
   { label: 'Dining & Bar', href: '/clubhouse/dining', note: 'Coorg home cooking and a well-kept bar after your round.' },
+  { label: 'Private Events', href: '/clubhouse/private-events', note: 'Corporate golf days, meetings and private evenings at the Downs.' },
   { label: 'Clubhouse Etiquette', href: '/clubhouse/etiquette', note: 'Expectations in the clubhouse, bar and dining room.' },
   { label: 'Gallery', href: '/clubhouse/gallery', note: 'The course and club through the seasons.' },
 ]

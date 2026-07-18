@@ -13,7 +13,21 @@ import {
 } from './shared'
 import { SpamGuard } from './SpamGuard'
 
-export function RoomEnquiryForm() {
+export function RoomEnquiryForm({
+  preferredRoomId,
+  preferredRoomName,
+  packageName,
+  defaultCheckIn,
+  defaultCheckOut,
+  submitLabel = 'Send availability enquiry',
+}: {
+  preferredRoomId?: number
+  preferredRoomName?: string
+  packageName?: string
+  defaultCheckIn?: string
+  defaultCheckOut?: string
+  submitLabel?: string
+} = {}) {
   const [result, formAction, pending] = useActionState<ActionResult | null, FormData>(
     submitRoomEnquiry,
     null,
@@ -24,14 +38,22 @@ export function RoomEnquiryForm() {
   return (
     <form action={formAction} className="grid gap-4 sm:grid-cols-2">
       <SpamGuard />
-      <Field label="Check-in date" name="checkInDate" type="date" required />
-      <Field label="Check-out date" name="checkOutDate" type="date" required />
+      {preferredRoomId ? <input type="hidden" name="preferredRoom" value={preferredRoomId} /> : null}
+      {packageName ? <input type="hidden" name="packageInterest" value={packageName} /> : null}
+      {preferredRoomName || packageName ? (
+        <p className="col-span-full rounded-sm border border-downs-100 bg-downs-50 p-3 text-sm text-downs-800">
+          Requesting: <span className="font-medium">{packageName ?? preferredRoomName}</span>
+          {packageName && preferredRoomName ? ` · ${preferredRoomName}` : ''}
+        </p>
+      ) : null}
+      <Field label="Check-in date" name="checkInDate" type="date" required defaultValue={defaultCheckIn} />
+      <Field label="Check-out date" name="checkOutDate" type="date" required defaultValue={defaultCheckOut} />
       <Field label="Number of rooms" name="numberOfRooms" type="number" min={1} defaultValue={1} required />
       <SelectField label="Guest category" name="guestCategory" required options={PLAYER_CATEGORY_OPTIONS} />
       <Field label="Adults" name="adults" type="number" min={1} defaultValue={2} required />
       <Field label="Children" name="children" type="number" min={0} defaultValue={0} />
       <div className="col-span-full flex gap-6">
-        <CheckboxField label="Golf during stay" name="golfRequired" />
+        <CheckboxField label="Golf during stay" name="golfRequired" defaultChecked={Boolean(packageName)} />
         <CheckboxField label="Dining required" name="diningRequired" />
       </div>
       <Field label="Full name" name="fullName" required autoComplete="name" />
@@ -42,7 +64,7 @@ export function RoomEnquiryForm() {
       </div>
       <div className="col-span-full space-y-4">
         <ResultNotice result={result} />
-        <SubmitButton label="Send availability enquiry" pending={pending} />
+        <SubmitButton label={submitLabel} pending={pending} />
       </div>
     </form>
   )

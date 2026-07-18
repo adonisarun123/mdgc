@@ -76,6 +76,8 @@ const roomSchema = z.object({
   checkInDate: z.string().min(1, 'Check-in date is required'),
   checkOutDate: z.string().min(1, 'Check-out date is required'),
   numberOfRooms: z.coerce.number().int().min(1),
+  preferredRoom: z.coerce.number().int().positive().optional(),
+  packageInterest: z.string().max(200).optional(),
   adults: z.coerce.number().int().min(1),
   children: z.coerce.number().int().min(0).optional(),
   guestCategory: playerCategory,
@@ -171,6 +173,59 @@ export async function submitMembershipEnquiry(_prev: ActionResult | null, formDa
       data: { ...parsed.data, enquiryStatus: 'new' },
     })
     return { ok: true, message: 'Your membership enquiry has been received. The membership office will be in touch.' }
+  } catch {
+    return { ok: false, error: 'Something went wrong submitting your enquiry. Please try again or call the club.' }
+  }
+}
+
+/* ---------------- Event enquiry ---------------- */
+
+const eventSchema = z.object({
+  eventType: z.enum([
+    'corporate-golf-day',
+    'conference',
+    'conference-and-golf',
+    'corporate-offsite',
+    'private-dinner',
+    'social-evening',
+    'other',
+  ]),
+  organisation: z.string().optional(),
+  preferredDate: z.string().min(1, 'Preferred date is required'),
+  alternativeDate: z.string().optional(),
+  headcount: z.coerce.number().int().min(1, 'Please tell us your headcount'),
+  golfersCount: z.coerce.number().int().min(0).optional(),
+  roomsRequired: z.coerce.number().int().min(0).optional(),
+  cateringRequired: z.coerce.boolean().optional(),
+  barRequired: z.coerce.boolean().optional(),
+  requirements: z.string().optional(),
+  ...contact,
+  notes: z.string().optional(),
+})
+
+export async function submitEventEnquiry(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (isSpam(formData)) return SPAM_RESULT
+  const parsed = eventSchema.safeParse(Object.fromEntries(formData))
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
+  }
+  try {
+    const payload = await getPayloadClient()
+    const d = parsed.data
+    await payload.create({
+      collection: 'event-enquiries',
+      data: {
+        ...d,
+        cateringRequired: Boolean(d.cateringRequired),
+        barRequired: Boolean(d.barRequired),
+        enquiryStatus: 'new',
+      },
+    })
+    return {
+      ok: true,
+      message:
+        'Your event enquiry has been received. The club will reply with what is possible for your dates, along with formats and pricing.',
+    }
   } catch {
     return { ok: false, error: 'Something went wrong submitting your enquiry. Please try again or call the club.' }
   }

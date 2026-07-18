@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { GolfCourseJsonLd } from '@/components/StructuredData'
 import '@fontsource-variable/fraunces'
 import '@fontsource-variable/inter'
 import './styles.css'
@@ -27,6 +28,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         >
           Skip to main content
         </a>
+        <GolfCourseJsonLd />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />

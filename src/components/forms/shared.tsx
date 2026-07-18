@@ -72,13 +72,22 @@ export function TextArea({
   )
 }
 
-export function CheckboxField({ label, name }: { label: string; name: string }) {
+export function CheckboxField({
+  label,
+  name,
+  defaultChecked,
+}: {
+  label: string
+  name: string
+  defaultChecked?: boolean
+}) {
   return (
     <label className="flex items-center gap-2 text-sm text-downs-900">
       <input
         type="checkbox"
         name={name}
         value="true"
+        defaultChecked={defaultChecked}
         className="h-4 w-4 rounded-sm border-mist-200 text-brass-500 focus:ring-brass-500"
       />
       {label}

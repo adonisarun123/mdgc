@@ -13,6 +13,17 @@ export const Rooms: CollectionConfig = {
   fields: [
     { name: 'roomName', type: 'text', required: true },
     {
+      name: 'totalUnits',
+      type: 'number',
+      required: true,
+      defaultValue: 1,
+      min: 0,
+      admin: {
+        description:
+          'Number of physical rooms in this category. The availability checker subtracts bookings in the register from this figure — keep it accurate.',
+      },
+    },
+    {
       type: 'row',
       fields: [
         { name: 'capacity', type: 'number', required: true },

@@ -121,6 +121,17 @@ export const RoomEnquiries: CollectionConfig = {
       ],
     },
     {
+      name: 'preferredRoom',
+      type: 'relationship',
+      relationTo: 'rooms',
+      admin: { description: 'Room category the guest chose in the availability checker, if any.' },
+    },
+    {
+      name: 'packageInterest',
+      type: 'text',
+      admin: { description: 'Stay & Play package the guest enquired about, if any.' },
+    },
+    {
       type: 'row',
       fields: [
         { name: 'adults', type: 'number', required: true, min: 1 },
@@ -200,6 +211,66 @@ export const TournamentRegistrations: CollectionConfig = {
     { name: 'homeClub', type: 'text' },
     { name: 'handicap', type: 'text', required: true },
     { name: 'affiliationDetails', type: 'textarea' },
+    { name: 'notes', type: 'textarea' },
+    enquiryStatusField,
+  ],
+}
+
+export const EventEnquiries: CollectionConfig = {
+  slug: 'event-enquiries',
+  labels: { singular: 'Event Enquiry', plural: 'Event Enquiries' },
+  hooks: { afterChange: [notifyOnEnquiry('event enquiry')] },
+  admin: {
+    useAsTitle: 'fullName',
+    defaultColumns: ['fullName', 'organisation', 'eventType', 'preferredDate', 'enquiryStatus'],
+    group: 'Enquiries',
+  },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    create: () => true,
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
+  },
+  fields: [
+    {
+      name: 'eventType',
+      type: 'select',
+      required: true,
+      options: [
+        { label: 'Corporate golf day', value: 'corporate-golf-day' },
+        { label: 'Conference / meeting', value: 'conference' },
+        { label: 'Conference + golf', value: 'conference-and-golf' },
+        { label: 'Team offsite (stay + activities)', value: 'corporate-offsite' },
+        { label: 'Private dinner or reception', value: 'private-dinner' },
+        { label: 'Social evening / entertainment', value: 'social-evening' },
+        { label: 'Other', value: 'other' },
+      ],
+    },
+    { name: 'organisation', type: 'text' },
+    {
+      type: 'row',
+      fields: [
+        { name: 'preferredDate', type: 'date', required: true },
+        { name: 'alternativeDate', type: 'date' },
+      ],
+    },
+    {
+      type: 'row',
+      fields: [
+        { name: 'headcount', type: 'number', required: true, min: 1 },
+        { name: 'golfersCount', type: 'number', min: 0, admin: { description: 'How many of the party will play golf.' } },
+        { name: 'roomsRequired', type: 'number', min: 0 },
+      ],
+    },
+    {
+      type: 'row',
+      fields: [
+        { name: 'cateringRequired', type: 'checkbox', defaultValue: false },
+        { name: 'barRequired', type: 'checkbox', defaultValue: false },
+      ],
+    },
+    { name: 'requirements', type: 'textarea', admin: { description: 'AV, entertainment, format or other requirements.' } },
+    ...contactFields,
     { name: 'notes', type: 'textarea' },
     enquiryStatusField,
   ],
